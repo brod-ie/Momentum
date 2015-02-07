@@ -126,8 +126,8 @@ io.on "connection", (socket) ->
   logger.info "Someone connected!"
   socket.emit "event", { hello: "world" }
 
-  socket.on "anything", (data) ->
-    socket.emit "anything", data
+  socket.on "event", (data) ->
+    socket.emit "event", data
     logger.info data
 
   socket.on "disconnect", ->
