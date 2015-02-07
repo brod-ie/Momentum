@@ -3,7 +3,7 @@ require "coffee-script/register" # Needed for .coffee modules
 require "longjohn" if process.env.NODE_ENV isnt "production"
 
 mongoose = require "mongoose"
-mongoose.connect 'mongodb://heroku_app33805946:dha067aegcnvruoipqggt6phl1@ds039311.mongolab.com:39311/heroku_app33805946'
+mongoose.connect process.env.MONGOLAB_URI
 
 express = require "express"
 
