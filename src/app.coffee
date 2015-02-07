@@ -1,29 +1,8 @@
 # Requires
 require "coffee-script/register" # Needed for .coffee modules
-require "longjohn" if process.env.NODE_ENV isnt "production"
 
-mongoose = require "mongoose"
-mongoose.connect process.env.MONGOLAB_URI
-
-Schema = mongoose.Schema
-
-eventSchema = Schema
-  event_name: String,
-  event_type: String,
-  event_value: Number,
-  user_id: String
-
-recipeSchema = Schema
-  recipe_type: String,
-  recipe_input: String,
-  condition:
-    operator: String,
-    comparison: String
-  output: String
-
-
-
-
+mongo = require("mongodb").MongoClient
+assert = require "assert"
 express = require "express"
 
 # Helper classes
@@ -36,6 +15,11 @@ config = __.config()
 app = express()
 http = require("http").Server(app)
 io = require("socket.io")(http)
+
+mongo.connect config.MONGOLAB_URI, (err, db) ->
+  assert.equal null, err
+  console.log 'Connected correctly to server'
+  db.close()
 
 # Express settings
 app.use require("compression")()

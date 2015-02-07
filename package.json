@@ -11,6 +11,7 @@
   },
   "author": "Ryan Brodie <ryanbrodie@me.com>",
   "dependencies": {
+    "assert": "^1.3.0",
     "basic-auth": "^1.0.0",
     "body-parser": "^1.10.1",
     "coffee-script": "^1.8.0",
@@ -38,7 +39,6 @@
     "log-timestamp": "^0.1.1",
     "longjohn": "^0.2.4",
     "mongodb": "^1.4.30",
-    "mongoose": "^3.8.23",
     "node-jasmine-async": "^0.1.0",
     "orchestrate": "^0.3.12",
     "rand-token": "^0.2.1",
