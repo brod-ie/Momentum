@@ -5,6 +5,25 @@ require "longjohn" if process.env.NODE_ENV isnt "production"
 mongoose = require "mongoose"
 mongoose.connect process.env.MONGOLAB_URI
 
+Schema = mongoose.Schema
+
+eventSchema = Schema
+  event_name: String,
+  event_type: String,
+  event_value: Number,
+  user_id: String
+
+recipeSchema = Schema
+  recipe_type: String,
+  recipe_input: String,
+  condition:
+    operator: String,
+    comparison: String
+  output: String
+
+
+
+
 express = require "express"
 
 # Helper classes
