@@ -45,7 +45,7 @@ app.get "/", (req, res) ->
 
 # Deauthorisation request
 # -----------------------
-app.delete "/auth", auth, (req, res, next) ->
+app.delete "/auth", (req, res, next) ->
   Tokens.deleteMany { token: req.token }, (err) ->
     return res.json({ success: "Token destroyed" })
 
@@ -54,7 +54,7 @@ app.delete "/auth", auth, (req, res, next) ->
 
 # Create message
 # --------------
-app.post "/message", auth, (req, res, next) ->
+app.post "/message", (req, res, next) ->
   if not req.body? or not req.body.message?
     err = new Error("No message provided")
     err.status = 400
@@ -70,7 +70,7 @@ app.post "/message", auth, (req, res, next) ->
 
 # Get recent messages
 # -------------------
-app.get "/messages", auth, (req, res, next) ->
+app.get "/messages", (req, res, next) ->
   Messages.find {}, (err, messages) ->
     res.json messages
 
@@ -100,7 +100,7 @@ app.post "/user", (req, res, next) ->
 
 # Get active users
 # ----------------
-app.get "/users/active", auth, (req, res, next) ->
+app.get "/users/active", (req, res, next) ->
   ActiveUsers.find {}, (err, users) ->
     res.json users
 
