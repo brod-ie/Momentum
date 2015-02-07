@@ -38,6 +38,7 @@
     "log-timestamp": "^0.1.1",
     "longjohn": "^0.2.4",
     "mongodb": "^1.4.30",
+    "mongoose": "^3.8.23",
     "node-jasmine-async": "^0.1.0",
     "orchestrate": "^0.3.12",
     "rand-token": "^0.2.1",
