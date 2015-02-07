@@ -127,7 +127,7 @@ io.on "connection", (socket) ->
   socket.emit "event", { hello: "world" }
 
   socket.on "anything", (data) ->
-    socket.emit data
+    socket.emit "anything", data
     logger.info data
 
   socket.on "disconnect", ->
