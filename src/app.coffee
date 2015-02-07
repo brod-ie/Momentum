@@ -63,6 +63,7 @@ io.on "connection", (socket) ->
   socket.on "event", (data) ->
     if data.event_name? and data.event_name is "app_open"
       socket.emit "push", { message: "Yo!" }
+      logger.info "Holy crap someone opened our app!"
     logger.info data
 
   socket.on "disconnect", ->
