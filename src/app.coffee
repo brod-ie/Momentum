@@ -123,11 +123,14 @@ app.use (err, req, res, next) ->
 # =============
 
 io.on "connection", (socket) ->
+  logger.info "Someone connected!"
+
   socket.on "*", (data) ->
     socket.emit data
+    logger.info data
 
   socket.on "disconnect", ->
-    logger.info "#{ socket.username } disconnected."
+    logger.info "User disconnected."
 
 # Run server and return object
 # ============================
