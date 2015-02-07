@@ -65,7 +65,8 @@ io.on "connection", (socket) ->
       socket.emit "push", { message: "Yo!" }
       logger.info "Holy crap someone opened our app!"
       logger.info data
-    logger.info data
+    else
+      logger.info data
 
   socket.on "disconnect", ->
     logger.info "User disconnected."
