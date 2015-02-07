@@ -28,11 +28,6 @@ app.use (req, res, next) ->
 # Datastore
 save = require("save")
 
-Messages = save("messages")
-Users = save("users")
-ActiveUsers = save("active_users")
-Tokens = save("tokens")
-
 # LOADERIO VERIFICATION
 # =====================
 app.get "/loaderio-fa1db6b2da5f4b83300113acc45c8a06/", (req, res) ->
@@ -46,49 +41,7 @@ app.get "/test-data.json", (req, res) ->
 app.get "/", (req, res) ->
   res.json
     status: 200
-    spec: "https://github.com/ryanbrodie/Briefly"
-
-# AUTHORISATION
-# =============
-
-# Bad access handler
-unauthorized = (res) ->
-  res.set "WWW-Authenticate", "Basic realm=Authorization Required"
-  res.sendStatus 401
-
-# Auth middleware for easy token validation
-auth = (req, res, next) ->
-  if not req.query? or not req.query.token?
-    return unauthorized res
-
-  Tokens.findOne { token: req.query.token }, (err, token) ->
-    return unauthorized res if token is undefined
-    req.token = token.token
-    req.username = token.username
-    next()
-
-# Authorisation request
-# --------------------
-app.post "/auth", (req, res, next) ->
-  user = require("basic-auth")(req)
-
-  return unauthorized(res) if not user or not user.name or not user.pass
-
-  Users.findOne { username: user.name, password: user.pass }, (err, user) ->
-    return unauthorized(res) if user is undefined
-
-    Tokens.findOne { username: user.username }, (err, token) ->
-      if token isnt undefined
-        return res.json(token)
-
-      token =
-        token: require('rand-token').generate(16)
-        username: user.username
-
-      token.token = "abcde" if user.username is "brodie"
-
-      Tokens.create token, (err, token) ->
-        return res.json(token)
+    spec: "https://github.com/ryanbrodie/Momentum"
 
 # Deauthorisation request
 # -----------------------
@@ -169,50 +122,12 @@ app.use (err, req, res, next) ->
 # REAL TIME API
 # =============
 
-# Validate connection
-io.use (socket, next) ->
-  # Parse URL
-  u = require("url").parse socket.handshake.url, true
-
-  if not u.query? or not u.query.token?
-    logger.warn "Bad Socket.IO connection attempt"
-    return socket.disconnect()
-
-  # Testing token
-  if u.query.token is "abcde"
-    socket.username = "brodie"
-    return next()
-
-  Tokens.findOne { token: u.query.token }, (err, token) ->
-    return socket.disconnect() if token is undefined
-    socket.username = token.username
-    next()
-
 io.on "connection", (socket) ->
-  ActiveUsers.findOne { username: socket.username }, (err, user) ->
-    ActiveUsers.create { username: socket.username } if user is undefined
-    logger.info "#{ socket.username } connected!"
+  socket.io "*", (data) ->
+    socket.emit data
 
   socket.on "disconnect", ->
     logger.info "#{ socket.username } disconnected."
-    ActiveUsers.findOne { username: socket.username }, (err, user) ->
-      ActiveUsers.delete user._id, (err) ->
-        logger.info "User removed" if err is undefined
-
-# On new message
-Messages.on "create", (message) ->
-  io.emit "message", message
-
-# Active user change
-emitActiveUser = (io) ->
-  ActiveUsers.find {}, (err, users) ->
-    io.emit "users/active", users
-
-ActiveUsers.on "create", (user) ->
-  emitActiveUser(io)
-
-ActiveUsers.on "delete", (user) ->
-  emitActiveUser(io)
 
 # Run server and return object
 # ============================

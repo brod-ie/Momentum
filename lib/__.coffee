@@ -3,6 +3,6 @@ class __
 
   config: ->
     return process.env if process.env.ENVIRONMENT?
-    return require "#{ __dirname }/../../Briefly.json"
+    return require "#{ __dirname }/../../Momentum.json"
 
 module.exports = new __
