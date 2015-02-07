@@ -124,6 +124,7 @@ app.use (err, req, res, next) ->
 
 io.on "connection", (socket) ->
   logger.info "Someone connected!"
+  socket.emit "event", { hello: "world" }
 
   socket.on "anything", (data) ->
     socket.emit data
