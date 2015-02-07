@@ -123,7 +123,7 @@ app.use (err, req, res, next) ->
 # =============
 
 io.on "connection", (socket) ->
-  socket.io "*", (data) ->
+  socket.on "*", (data) ->
     socket.emit data
 
   socket.on "disconnect", ->
