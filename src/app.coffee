@@ -20,9 +20,9 @@ http = require("http").Server(app)
 # Datastore
 save = require("save")
 
-Events = save("events")
-Users = save("users")
-Recipes = save("recipes")
+Events = save("event")
+Users = save("user")
+Recipes = save("recipe")
 
 # Express settings
 app.use require("compression")()
@@ -77,7 +77,7 @@ app.post "/recipe", (req, res) ->
 
   if body.recipe_type not in ["when", "on"]
     res.json
-      message: "When or On only!"
+      message: "Invalid type"
     return
 
   if body.recipe_output not in ["trello"]
@@ -91,12 +91,15 @@ app.post "/recipe", (req, res) ->
 
   recipe =
     recipe_name: body.recipe_name,
-    recipe_type: body.recipe_type,
+    recipe_type: body.recipe_type
     recipe_input: body.recipe_input,
     recipe_output: body.recipe_output,
     recipe_condition:
       operator: body.operator,
       comparison: body.comparison
+
+  Recipes.create recipe, (err, msg) ->
+    res.json msg
 
 # ERROR HANDLING
 # ==============
@@ -125,6 +128,45 @@ Events.on "create", (event) ->
   # Send crash log to Trello
   if event.event_name is "crash"
     t.post '/1/card', { name: 'That\s a crash yo.', idList: '54d73f9545f7fe3e0963c365' }, (err, data) -> console.log data
+
+Events.on "create", (event) ->
+  logger.info event
+  Recipes.findOne {recipe_input: event.event_name}, (err, recipe) ->
+    if err != null
+      logger.warn err
+      return
+
+    logger.info recipe
+
+    recipe_condition = recipe.recipe_condition
+
+    gotCompared = (err, comparison) ->
+      if recipe_condition.operator == "<"
+        if not (event.event_value < comparison)
+          return
+      if recipe_condition.operator == ">"
+        if not (event.event_value > comparison)
+          return
+      if recipe_condition.operator == "=="
+        if not (event.event_value == comparison)
+          return
+      if recipe_condition.operator == "!="
+        if not (event.event_value != comparison)
+          return
+
+      pusher.trigger 'recipes', recipe.output
+
+
+    if recipe_condition.comparison.indexOf '$' == 0
+      comparison = recipe_condition.comparison.substring 1
+      comparison = Events.find {event_name: comparison}, (err, objs) ->
+        obj = objs.sort((a,b) -> b.at-a.at)[0]
+        gotCompared err obj.event_value
+    else
+      comparison = parseInt(recipe_condition.comparison, 10)
+      gotCompared null, comparison
+
+
 
 pusher.trigger 'channel-1', 'test_event', message: 'hello world'
 
