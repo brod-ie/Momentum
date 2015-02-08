@@ -65,10 +65,19 @@ app.post "/events", (req, res) ->
     event_type: req.body.event_type,
     event_value: req.body.event_value,
     event_body: req.body.event_body,
+    event_image: req.body.event_image,
     user_id: req.body.user_id
 
   Events.create event, (err, msg) ->
     res.json msg
+
+app.post "/recipe", (req, res) ->
+  logger.info req.body
+
+  recipe =
+    recipe_type: "",
+    recipe_input: "",
+
 
 # ERROR HANDLING
 # ==============
