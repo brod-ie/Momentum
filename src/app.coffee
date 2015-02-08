@@ -134,7 +134,7 @@ Events.on "create", (e) ->
       desc: e.event_body,
     , (err, data) ->
       console.log data
-      t.post "/1/card/#{ data.idCard }/attachments",
+      t.post "/1/card/#{ data.id }/attachments",
         file: e.event_image
       , (err, data) ->
         console.log err
