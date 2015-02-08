@@ -49,7 +49,7 @@ app.get "/", (req, res) ->
 # =========
 app.post "/events", (req, res) ->
   logger.info req.body
-  pusher.trigger 'actions', 'text_event', req.body
+  pusher.trigger 'actions', 'test_event', req.body
 
 # ERROR HANDLING
 # ==============
