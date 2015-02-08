@@ -133,6 +133,7 @@ Events.on "create", (e) ->
       idMembers: '50eccd784648e1362e0008a6',
       desc: e.event_body,
     , (err, data) ->
+      console.log data
       t.post "/1/card/#{ data.idCard }/attachments",
         file: e.event_image
       , (err, data) ->
