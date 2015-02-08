@@ -114,7 +114,7 @@ app.use (req, res, next) ->
 app.use (err, req, res, next) ->
   res.status err.status or 500
   res.json
-    error: err.message
+    error: err
 
 # REAL TIME API
 # =============
@@ -132,15 +132,17 @@ Events.on "create", (event) ->
 Events.on "create", (event) ->
   logger.info event
   Recipes.findOne {recipe_input: event.event_name}, (err, recipe) ->
-    if err != null
+    if err != undefined
       logger.warn err
       return
 
     logger.info recipe
 
     recipe_condition = recipe.recipe_condition
+    recipe_output = recipe.recipe_output
 
     gotCompared = (err, comparison) ->
+      logger.info "Comparing " + event.event_value + recipe_condition.operator + comparison
       if recipe_condition.operator == "<"
         if not (event.event_value < comparison)
           return
@@ -154,17 +156,21 @@ Events.on "create", (event) ->
         if not (event.event_value != comparison)
           return
 
-      pusher.trigger 'recipes', recipe.output
+      logger.info "Trigger Output"
+      logger.info recipe_output
+      pusher.trigger 'recipes', recipe_output, {"message": "Holly crap it works!"}
 
 
-    if recipe_condition.comparison.indexOf '$' == 0
+    if (recipe_condition.comparison.indexOf '$') == 0
+      logger.info 'Event value'
       comparison = recipe_condition.comparison.substring 1
       comparison = Events.find {event_name: comparison}, (err, objs) ->
         obj = objs.sort((a,b) -> b.at-a.at)[0]
         gotCompared err obj.event_value
     else
+      logger.info 'Static value'
       comparison = parseInt(recipe_condition.comparison, 10)
-      gotCompared null, comparison
+      gotCompared undefined, comparison
 
 
 
