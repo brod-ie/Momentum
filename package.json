@@ -49,6 +49,7 @@
     "socket.io-client": "^1.2.1",
     "supervisor": "^0.6.0",
     "tracer": "^0.7.3",
+    "twilio": "^1.10.0",
     "url": "^0.10.2",
     "vinyl-source-stream": "^0.1.1"
   },
