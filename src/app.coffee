@@ -26,6 +26,12 @@ app.use require("compression")()
 app.use require("body-parser").json({ strict: false })
 app.set 'json spaces', 2
 
+# Pusher setup
+pusher = new Pusher
+  appId: '106421',
+  key: '25ec6b2cb63f36185bc1',
+  secret: 'b3e639f8b89eed3b8e78'
+
 # Fix json error
 app.use (req, res, next) ->
   req.body = JSON.parse req.body if typeof req.body is "string"
@@ -43,7 +49,7 @@ app.get "/", (req, res) ->
 # =========
 app.post "/events", (req, res) ->
   logger.info req.body
-  puser.trigger 'actions', 'text_event', req.body
+  pusher.trigger 'actions', 'text_event', req.body
 
 # ERROR HANDLING
 # ==============
@@ -62,11 +68,6 @@ app.use (err, req, res, next) ->
 
 # REAL TIME API
 # =============
-
-pusher = new Pusher
-  appId: '106421',
-  key: '25ec6b2cb63f36185bc1',
-  secret: 'b3e639f8b89eed3b8e78'
 
 pusher.trigger 'channel-1', 'test_event', message: 'hello world'
 
