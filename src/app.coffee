@@ -5,6 +5,7 @@ mongo = require("mongodb").MongoClient
 assert = require "assert"
 express = require "express"
 Pusher = require "pusher"
+Trello = require "node-trello"
 
 # Helper classes
 __ = require "#{ __dirname }/../lib/__"
@@ -86,17 +87,11 @@ app.use (err, req, res, next) ->
 
 pusher.trigger 'channel-1', 'test_event', message: 'hello world'
 
-# io.on "connection", (socket) ->
-#   logger.info "Someone connected!"
-#   socket.emit "event", { hello: "world" }
+# TRELLO
+# ======
 
-#   socket.on "event", (data) ->
-#     if data.event_name? and data.event_name is "app_open"
-#       socket.emit "push", { message: "Yo!" }
-#     logger.info data
-
-#   socket.on "disconnect", ->
-#     logger.info "User disconnected."
+t = new Trello("8bd0662b8bb4434a08917d303d4aeb59", "4cebf5edcf258f109a44df7af08deac210422013d2295f0a43b65a510b730dd6")
+t.post '/1/card', { name: 'hello world', idList: '54d73f9545f7fe3e0963c365' }, (err, data) -> console.log data
 
 # Run server and return object
 # ============================
