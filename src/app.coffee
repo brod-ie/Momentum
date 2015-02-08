@@ -29,6 +29,9 @@ app.use require("compression")()
 app.use require("body-parser").json({ strict: false })
 app.set 'json spaces', 2
 
+# Trello setup
+t = new Trello("8bd0662b8bb4434a08917d303d4aeb59", "4cebf5edcf258f109a44df7af08deac210422013d2295f0a43b65a510b730dd6")
+
 # Pusher setup
 pusher = new Pusher
   appId: '106421',
@@ -85,13 +88,17 @@ app.use (err, req, res, next) ->
 # REAL TIME API
 # =============
 
+# Active user change
+emitActiveUser = (io) ->
+  ActiveUsers.find {}, (err, users) ->
+    io.emit "users/active", users
+
+Events.on "create", (event) ->
+  # Send crash log to Trello
+  if event.event_name is "crash"
+    t.post '/1/card', { name: 'That\s a crash yo.', idList: '54d73f9545f7fe3e0963c365' }, (err, data) -> console.log data
+
 pusher.trigger 'channel-1', 'test_event', message: 'hello world'
-
-# TRELLO
-# ======
-
-t = new Trello("8bd0662b8bb4434a08917d303d4aeb59", "4cebf5edcf258f109a44df7af08deac210422013d2295f0a43b65a510b730dd6")
-t.post '/1/card', { name: 'hello world', idList: '54d73f9545f7fe3e0963c365' }, (err, data) -> console.log data
 
 # Run server and return object
 # ============================
