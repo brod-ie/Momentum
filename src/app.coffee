@@ -38,6 +38,12 @@ app.get "/", (req, res) ->
     status: 200
     spec: "https://github.com/ryanbrodie/Momentum"
 
+
+# EVENT API
+# =========
+app.post "/", (req, res) ->
+  logger.info req.body
+
 # ERROR HANDLING
 # ==============
 
