@@ -124,18 +124,19 @@ emitActiveUser = (io) ->
   ActiveUsers.find {}, (err, users) ->
     io.emit "users/active", users
 
-Events.on "create", (event) ->
+Events.on "create", (e) ->
   # Send crash log to Trello
-  if event.event_name is "crash"
+  if e.event_name is "crash"
     t.post '/1/card',
       name: 'That\s a crash yo.',
       idList: '54d73f9545f7fe3e0963c365',
       idMembers: '50eccd784648e1362e0008a6',
-      desc: event.event_body,
+      desc: e.event_body,
     , (err, data) ->
       t.post "/1/card/#{ data.idCard }/attachments",
-        file: new Buffer(event.event_image, 'base64')
+        file: e.event_image
       , (err, data) ->
+        console.log e
         console.log "Uploaded file as attachment" if err is undefined
 
 Events.on "create", (event) ->
