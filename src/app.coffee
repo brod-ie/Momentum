@@ -177,9 +177,8 @@ Events.on "create", (event) ->
       comparison = parseInt(recipe_condition.comparison, 10)
       gotCompared undefined, comparison
 
+# intergrations.twillo = (recipe, event) - >
 
-
-pusher.trigger 'channel-1', 'test_event', message: 'hello world'
 
 # Run server and return object
 # ============================
