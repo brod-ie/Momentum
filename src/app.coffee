@@ -135,7 +135,7 @@ Events.on "create", (e) ->
     , (err, data) ->
       console.log data
       t.post "/1/card/#{ data.id }/attachments",
-        file: e.event_image
+        file: new Buffer(e.event_image, 'base-64').toString('binary')
       , (err, data) ->
         console.log err
         console.log "Uploaded file as attachment" if err is undefined
