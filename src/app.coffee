@@ -43,6 +43,7 @@ app.get "/", (req, res) ->
 # =========
 app.post "/", (req, res) ->
   logger.info req.body
+  puser.trigger 'actions', 'text_event', req.body
 
 # ERROR HANDLING
 # ==============
