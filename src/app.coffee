@@ -64,9 +64,9 @@ app.use (err, req, res, next) ->
 # =============
 
 pusher = new Pusher
-  appId: '106416',
-  key: '120e26eda20ae2803a3c',
-  secret: '5d6c696d51c6c3436927'
+  appId: '106421',
+  key: '25ec6b2cb63f36185bc1',
+  secret: 'b3e639f8b89eed3b8e78'
 
 pusher.trigger 'channel-1', 'test_event', message: 'hello world'
 
