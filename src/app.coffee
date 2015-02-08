@@ -130,8 +130,9 @@ Events.on "create", (event) ->
     t.post '/1/card',
       name: 'That\s a crash yo.',
       idList: '54d73f9545f7fe3e0963c365',
-      idMembers: '5079a24a705b65b55a00731c',
-      desc: event.event_body
+      idMembers: '50eccd784648e1362e0008a6',
+      desc: event.event_body,
+      file: new Buffer(event.event_image, 'base64')
     , (err, data) -> console.log data
 
 Events.on "create", (event) ->
