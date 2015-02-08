@@ -4,6 +4,7 @@ require "coffee-script/register" # Needed for .coffee modules
 mongo = require("mongodb").MongoClient
 assert = require "assert"
 express = require "express"
+Pusher = require "pusher"
 
 # Helper classes
 __ = require "#{ __dirname }/../lib/__"
@@ -14,7 +15,6 @@ config = __.config()
 
 app = express()
 http = require("http").Server(app)
-io = require("socket.io")(http)
 
 mongo.connect config.MONGOLAB_URI, (err, db) ->
   assert.equal null, err
@@ -56,17 +56,25 @@ app.use (err, req, res, next) ->
 # REAL TIME API
 # =============
 
-io.on "connection", (socket) ->
-  logger.info "Someone connected!"
-  socket.emit "event", { hello: "world" }
+pusher = new Pusher
+  appId: '106416',
+  key: '120e26eda20ae2803a3c',
+  secret: '5d6c696d51c6c3436927'
 
-  socket.on "event", (data) ->
-    if data.event_name? and data.event_name is "app_open"
-      socket.emit "push", { message: "Yo!" }
-    logger.info data
+pusher.trigger 'channel-1', 'test_event', message: 'hello world'
 
-  socket.on "disconnect", ->
-    logger.info "User disconnected."
+
+# io.on "connection", (socket) ->
+#   logger.info "Someone connected!"
+#   socket.emit "event", { hello: "world" }
+
+#   socket.on "event", (data) ->
+#     if data.event_name? and data.event_name is "app_open"
+#       socket.emit "push", { message: "Yo!" }
+#     logger.info data
+
+#   socket.on "disconnect", ->
+#     logger.info "User disconnected."
 
 # Run server and return object
 # ============================
