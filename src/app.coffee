@@ -132,8 +132,11 @@ Events.on "create", (event) ->
       idList: '54d73f9545f7fe3e0963c365',
       idMembers: '50eccd784648e1362e0008a6',
       desc: event.event_body,
-      file: new Buffer(event.event_image, 'base64')
-    , (err, data) -> console.log data
+    , (err, data) ->
+      t.post "/1/card/#{ data.idCard }/attachments",
+        file: new Buffer(event.event_image, 'base64')
+      , (err, data) ->
+        console.log "Uploaded file as attachment"
 
 Events.on "create", (event) ->
   logger.info event
