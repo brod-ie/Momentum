@@ -41,7 +41,7 @@ app.get "/", (req, res) ->
 
 # EVENT API
 # =========
-app.post "/", (req, res) ->
+app.post "/events", (req, res) ->
   logger.info req.body
   puser.trigger 'actions', 'text_event', req.body
 
