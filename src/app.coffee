@@ -16,10 +16,12 @@ config = __.config()
 app = express()
 http = require("http").Server(app)
 
-mongo.connect config.MONGOLAB_URI, (err, db) ->
-  assert.equal null, err
-  console.log 'Connected correctly to server'
-  db.close()
+# Datastore
+save = require("save")
+
+Events = save("events")
+Users = save("users")
+Recipes = save("recipes")
 
 # Express settings
 app.use require("compression")()
@@ -37,6 +39,8 @@ app.use (req, res, next) ->
   req.body = JSON.parse req.body if typeof req.body is "string"
   next()
 
+# Event Checking
+
 # ROOT
 # ====
 app.get "/", (req, res) ->
@@ -50,6 +54,17 @@ app.get "/", (req, res) ->
 app.post "/events", (req, res) ->
   logger.info req.body
   pusher.trigger 'actions', 'test_event', req.body
+
+  event =
+    at: Date.now(),
+    event_name: req.body.event_name,
+    event_type: req.body.event_type,
+    event_value: req.body.event_value,
+    event_body: req.body.event_body,
+    user_id: req.body.user_id
+
+  Events.create event, (err, msg) ->
+    res.json msg
 
 # ERROR HANDLING
 # ==============
