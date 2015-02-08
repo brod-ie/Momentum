@@ -73,11 +73,30 @@ app.post "/events", (req, res) ->
 
 app.post "/recipe", (req, res) ->
   logger.info req.body
+  body = req.body
+
+  if body.recipe_type not in ["when", "on"]
+    res.json
+      message: "When or On only!"
+    return
+
+  if body.recipe_output not in ["trello"]
+    res.json
+      message: "No output!"
+    return
+
+  if body.operator not in ["<", ">", "==", "!="]
+    re.json
+      message: "Invalid operator"
 
   recipe =
-    recipe_type: "",
-    recipe_input: "",
-
+    recipe_name: body.recipe_name,
+    recipe_type: body.recipe_type,
+    recipe_input: body.recipe_input,
+    recipe_output: body.recipe_output,
+    recipe_condition:
+      operator: body.operator,
+      comparison: body.comparison
 
 # ERROR HANDLING
 # ==============
