@@ -136,7 +136,7 @@ Events.on "create", (e) ->
       t.post "/1/card/#{ data.idCard }/attachments",
         file: e.event_image
       , (err, data) ->
-        console.log e
+        console.log err
         console.log "Uploaded file as attachment" if err is undefined
 
 Events.on "create", (event) ->
