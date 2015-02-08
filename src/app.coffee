@@ -127,7 +127,12 @@ emitActiveUser = (io) ->
 Events.on "create", (event) ->
   # Send crash log to Trello
   if event.event_name is "crash"
-    t.post '/1/card', { name: 'That\s a crash yo.', idList: '54d73f9545f7fe3e0963c365' }, (err, data) -> console.log data
+    t.post '/1/card',
+      name: 'That\s a crash yo.',
+      idList: '54d73f9545f7fe3e0963c365',
+      idMembers: '5079a24a705b65b55a00731c',
+      desc: event.event_body
+    , (err, data) -> console.log data
 
 Events.on "create", (event) ->
   logger.info event
