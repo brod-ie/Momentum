@@ -61,7 +61,17 @@ pusher = new Pusher
   key: '120e26eda20ae2803a3c',
   secret: '5d6c696d51c6c3436927'
 
+<<<<<<< HEAD
 pusher.trigger 'channel-1', 'test_event', message: 'hello world'
+=======
+  socket.on "event", (data) ->
+    if data.event_name? and data.event_name is "app_open"
+      socket.emit "push", { message: "Yo!" }
+      logger.info "Holy crap someone opened our app!"
+      logger.info data
+    else
+      logger.info data
+>>>>>>> FETCH_HEAD
 
 
 # io.on "connection", (socket) ->
